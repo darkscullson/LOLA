@@ -227,16 +227,40 @@ footer{
 .home-card h3{font-size:1.05rem; color:var(--clay-dark); margin-bottom:6px;}
 .home-card p{margin:0; font-size:0.92rem; color:var(--ink-soft);}
 
+#map{
+  height:560px; width:100%; border-radius:6px;
+  border:2px solid var(--clay); box-shadow:0 8px 24px rgba(0,0,0,0.15);
+  margin-top:10px; background:#e2d5b8;
+}
+.map-legend{
+  display:flex; flex-wrap:wrap; gap:18px; margin:16px 0 6px;
+  font-family:'Cinzel', serif; font-size:0.78rem; letter-spacing:0.04em;
+}
+.map-legend span{display:flex; align-items:center; gap:8px;}
+.map-legend .dot{width:13px; height:13px; border-radius:50%; display:inline-block; border:2px solid var(--ink);}
+.map-legend .dot.iliade{background:var(--laurel);}
+.map-legend .dot.odyssee{background:var(--clay);}
+.leaflet-popup-content-wrapper{
+  background:#f6f0e0; color:var(--ink); border-radius:3px;
+  font-family:'EB Garamond', serif;
+}
+.leaflet-popup-content{margin:14px 16px; line-height:1.45;}
+.leaflet-popup-content h4{font-family:'Cinzel', serif; color:var(--clay-dark); font-size:0.95rem; margin:0 0 6px;}
+.leaflet-popup-tip{background:#f6f0e0;}
+
 @media (max-width:640px){
   .hero{padding-top:40px;}
   .hero h1{font-size:2rem;}
   body{font-size:17px;}
+  #map{height:420px;}
 }
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto;}
   .page{animation:none;}
 }
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 </head>
 <body>
 
@@ -251,6 +275,7 @@ footer{
       <button data-page="hera">Héra</button>
       <button data-page="persephone">Perséphone</button>
       <button data-page="hades">Hadès</button>
+      <button data-page="carte">Carte</button>
     </nav>
   </div>
   <div class="meander dark"></div>
@@ -858,6 +883,35 @@ footer{
     </div>
   </section>
 
+  <!-- ================= CARTE ================= -->
+  <section class="page" id="carte">
+    <div class="hero">
+      <div class="hero-text">
+        <span class="label">Page 7</span>
+        <h1>La carte du monde homérique</h1>
+        <p class="sub">Les lieux réels de la guerre de Troie, et les escales — souvent légendaires — du voyage d'Ulysse à travers toute la Méditerranée.</p>
+      </div>
+      <div class="medallion">
+        <svg viewBox="0 0 24 24"><path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3zM9 3v15M15 6v15"/></svg>
+      </div>
+    </div>
+    <div class="meander"></div>
+
+    <section class="block">
+      <h2>Troie, Ithaque, et tout ce qu'il y a entre les deux</h2>
+      <p class="intro">Contrairement aux lieux de l'Iliade — Troie, Mycènes, Sparte — bien identifiés par l'archéologie, la plupart des escales de l'Odyssée n'ont jamais été localisées avec certitude. Les emplacements ci-dessous suivent les hypothèses traditionnelles les plus courantes, proposées depuis l'Antiquité : à prendre comme une invitation au voyage, pas comme un relevé GPS.</p>
+
+      <div class="map-legend">
+        <span><i class="dot iliade"></i> Lieux de l'Iliade</span>
+        <span><i class="dot odyssee"></i> Étapes de l'Odyssée (ordre du voyage)</span>
+      </div>
+
+      <div id="map"></div>
+
+      <blockquote class="aside">Clique sur un point pour lire l'anecdote qui va avec. La ligne pointillée suit l'itinéraire d'Ulysse, dans l'ordre du récit.</blockquote>
+    </section>
+  </section>
+
 </main>
 
 <footer>Fait avec un peu trop d'anecdotes mythologiques, spécialement pour Lola (et Héra)</footer>
@@ -871,6 +925,10 @@ footer{
     navButtons.forEach(b => b.classList.toggle('active', b.dataset.page === id));
     if(updateHash !== false){ history.replaceState(null, '', '#' + id); }
     window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'});
+    if(id === 'carte'){
+      initMap();
+      setTimeout(() => { if(window._lolaMap) window._lolaMap.invalidateSize(); }, 60);
+    }
   }
 
   document.querySelectorAll('[data-page]').forEach(el => {
@@ -884,6 +942,73 @@ footer{
   });
 
   const initial = location.hash.replace('#','');
+
+  // ---------- Carte Leaflet ----------
+  const iliadePoints = [
+    { name:"Troie (Hisarlik)", lat:39.9576, lng:26.2389,
+      desc:"Le site archéologique d'Hisarlik, en Turquie actuelle, est identifié depuis le 19ᵉ siècle comme l'emplacement le plus probable de la Troie homérique. Plusieurs cités superposées y ont été fouillées." },
+    { name:"Mont Ida", lat:39.7167, lng:26.9000,
+      desc:"Montagne sacrée surplombant la plaine de Troie, résidence des dieux pendant le siège et lieu traditionnel du jugement de Pâris." },
+    { name:"Mycènes", lat:37.7311, lng:22.7562,
+      desc:"Cité fortifiée du Péloponnèse, capitale d'Agamemnon, chef suprême de la coalition grecque partie assiéger Troie." },
+    { name:"Sparte", lat:37.0755, lng:22.4297,
+      desc:"Royaume de Ménélas et d'Hélène. C'est l'enlèvement d'Hélène depuis ce palais qui sert de déclencheur officiel à la guerre." },
+    { name:"Ithaque", lat:38.3667, lng:20.7167,
+      desc:"Île-royaume d'Ulysse, point de départ et d'arrivée de l'Odyssée — et lieu où Pénélope tisse et détisse son linceul." }
+  ];
+
+  const odysseePoints = [
+    { name:"1 · Troie (départ)", lat:39.9576, lng:26.2389, desc:"Ulysse quitte Troie après la victoire grecque, sans se douter que le retour prendra dix ans." },
+    { name:"2 · Ismaros (Cicones)", lat:40.85, lng:25.40, desc:"Première escale en Thrace : Ulysse pille la ville, s'attarde trop longtemps, et les Cicones contre-attaquent." },
+    { name:"3 · Île des Lotophages", lat:33.8076, lng:10.8451, desc:"Traditionnellement située à Djerba, en Tunisie actuelle. Le fruit du lotus efface l'envie de rentrer chez soi." },
+    { name:"4 · Île du Cyclope Polyphème", lat:37.75, lng:15.10, desc:"Associée à la région de l'Etna, en Sicile. C'est ici qu'Ulysse invente le nom « Personne »." },
+    { name:"5 · Île d'Éole", lat:38.48, lng:14.96, desc:"Les îles Éoliennes, au nord de la Sicile, abritent traditionnellement Éole et son outre à vents." },
+    { name:"6 · Pays des Lestrygons", lat:41.39, lng:9.16, desc:"Souvent situé du côté de Bonifacio, en Corse. Des géants cannibales y détruisent presque toute la flotte d'Ulysse." },
+    { name:"7 · Île de Circé (Aeaea)", lat:41.2167, lng:13.0667, desc:"Identifiée au Monte Circeo, sur la côte italienne. Circé y transforme les hommes d'Ulysse en cochons." },
+    { name:"8 · Entrée des Enfers", lat:40.8386, lng:14.0714, desc:"Le lac Averne, près de Cumes en Italie, est le site traditionnel de la descente d'Ulysse aux Enfers." },
+    { name:"9 · Rocher des Sirènes", lat:40.5833, lng:14.4667, desc:"Les îles Li Galli, au large de Positano, sont traditionnellement associées au chant mortel des Sirènes." },
+    { name:"10 · Charybde et Scylla", lat:38.23, lng:15.63, desc:"Le détroit de Messine, entre Sicile et Italie continentale, incarne le passage périlleux entre les deux monstres." },
+    { name:"11 · Île du Soleil (Thrinacie)", lat:37.50, lng:14.30, desc:"Souvent assimilée à la Sicile elle-même. Les hommes d'Ulysse y mangent les bœufs sacrés d'Hélios — leur perte." },
+    { name:"12 · Île de Calypso (Ogygie)", lat:36.0443, lng:14.2492, desc:"Parfois associée à l'île de Gozo, à Malte. Calypso y retient Ulysse plusieurs années en lui offrant l'immortalité." },
+    { name:"13 · Pays des Phéaciens (Schérie)", lat:39.6243, lng:19.9217, desc:"Traditionnellement identifiée à Corfou. Les Phéaciens accueillent Ulysse et le ramènent enfin vers Ithaque." },
+    { name:"14 · Ithaque (retour)", lat:38.3667, lng:20.7167, desc:"Vingt ans après son départ pour Troie, Ulysse retrouve enfin Pénélope, Télémaque et son trône." }
+  ];
+
+  function initMap(){
+    if(window._lolaMap || typeof L === 'undefined') return;
+    const map = L.map('map', { scrollWheelZoom:false }).setView([38.5, 18], 5);
+    window._lolaMap = map;
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution:'&copy; OpenStreetMap contributors',
+      maxZoom:18
+    }).addTo(map);
+
+    function coloredDot(color){
+      return L.divIcon({
+        className:'',
+        html:`<div style="width:16px;height:16px;border-radius:50%;background:${color};border:2px solid #1b1712;box-shadow:0 1px 3px rgba(0,0,0,.4);"></div>`,
+        iconSize:[16,16], iconAnchor:[8,8]
+      });
+    }
+
+    iliadePoints.forEach(pt => {
+      L.marker([pt.lat, pt.lng], { icon: coloredDot('#6b7a52') })
+        .addTo(map)
+        .bindPopup(`<h4>${pt.name}</h4><p>${pt.desc}</p>`);
+    });
+
+    const routeCoords = [];
+    odysseePoints.forEach(pt => {
+      routeCoords.push([pt.lat, pt.lng]);
+      L.marker([pt.lat, pt.lng], { icon: coloredDot('#b5533c') })
+        .addTo(map)
+        .bindPopup(`<h4>${pt.name}</h4><p>${pt.desc}</p>`);
+    });
+
+    L.polyline(routeCoords, { color:'#b5533c', weight:2, dashArray:'6 8', opacity:0.8 }).addTo(map);
+  }
+
   if(initial && document.getElementById(initial)) showPage(initial, false);
 </script>
 
