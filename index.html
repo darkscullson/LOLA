@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pour Lola — L'Iliade, l'Odyssée & les Dieux</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Cinzel+Decorative:wght@700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+:root{
+  --ink:#1b1712;
+  --ink-soft:#2a231c;
+  --papyrus:#ede3cf;
+  --papyrus-dim:#e2d5b8;
+  --clay:#b5533c;
+  --clay-dark:#8f3f2c;
+  --laurel:#6b7a52;
+  --gold:#c9a227;
+  --plum:#3a2a1f;
+  --line:rgba(27,23,18,0.18);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--papyrus);
+  color:var(--ink);
+  font-family:'EB Garamond', serif;
+  font-size:19px;
+  line-height:1.6;
+}
+h1,h2,h3,.display{
+  font-family:'Cinzel', serif;
+  letter-spacing:0.02em;
+  font-weight:600;
+  margin:0;
+}
+.label{
+  font-family:'Cinzel', serif;
+  font-size:0.72rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:var(--clay-dark);
+}
+
+/* ---------- Meander divider (Greek key) ---------- */
+.meander{
+  height:16px;
+  width:100%;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='16' viewBox='0 0 40 16'%3E%3Cpath d='M0 16 L0 5 L9 5 L9 11 L18 11 L18 0 L27 0 L27 16 L36 16 L36 5' fill='none' stroke='%23b5533c' stroke-width='2.4'/%3E%3C/svg%3E");
+  background-repeat:repeat-x;
+  background-position:left center;
+  opacity:0.85;
+}
+.meander.dark{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='16' viewBox='0 0 40 16'%3E%3Cpath d='M0 16 L0 5 L9 5 L9 11 L18 11 L18 0 L27 0 L27 16 L36 16 L36 5' fill='none' stroke='%23c9a227' stroke-width='2.4'/%3E%3C/svg%3E");
+}
+
+/* ---------- Nav ---------- */
+header{
+  position:sticky; top:0; z-index:50;
+  background:var(--ink);
+  color:var(--papyrus);
+}
+.nav-wrap{
+  max-width:1100px; margin:0 auto;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 24px;
+  flex-wrap:wrap; gap:10px;
+}
+.brand{
+  font-family:'Cinzel Decorative', serif;
+  font-size:1.05rem;
+  color:var(--gold);
+  letter-spacing:0.05em;
+  cursor:pointer;
+}
+nav{display:flex; gap:4px; flex-wrap:wrap;}
+nav button{
+  background:none; border:none; color:var(--papyrus-dim);
+  font-family:'Cinzel', serif; font-size:0.68rem; letter-spacing:0.14em;
+  text-transform:uppercase; padding:9px 12px; cursor:pointer;
+  border-radius:2px; transition:color .2s, background .2s;
+}
+nav button:hover{color:var(--papyrus); background:rgba(255,255,255,0.06);}
+nav button.active{color:var(--gold); background:rgba(201,162,39,0.12);}
+nav button:focus-visible, .brand:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+
+/* ---------- Layout ---------- */
+main{max-width:1100px; margin:0 auto; padding:0 24px;}
+.page{display:none; animation:fade .5s ease;}
+.page.active{display:block;}
+@keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+.hero{
+  padding:64px 0 36px;
+  display:flex; gap:40px; align-items:center; flex-wrap:wrap;
+}
+.hero-text{flex:1; min-width:280px;}
+.hero h1{font-size:2.6rem; line-height:1.15; margin-bottom:14px;}
+.hero .sub{font-style:italic; color:var(--clay-dark); font-size:1.15rem; max-width:520px;}
+.medallion{
+  width:150px; height:150px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, var(--clay), var(--clay-dark) 70%);
+  border:5px solid var(--gold);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+  box-shadow:0 8px 24px rgba(0,0,0,0.25);
+}
+.medallion svg{width:78px; height:78px; fill:var(--papyrus);}
+
+section.block{padding:40px 0;}
+section.block h2{font-size:1.7rem; margin-bottom:6px;}
+section.block .intro{max-width:680px; color:var(--ink-soft); margin-bottom:28px;}
+
+/* card grid for anecdotes */
+.cards{display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:20px;}
+.card{
+  background:#f6f0e0;
+  border:1px solid var(--line);
+  border-left:4px solid var(--clay);
+  padding:22px 22px 20px;
+  position:relative;
+  border-radius:2px;
+}
+.card .label{display:block; margin-bottom:8px;}
+.card h3{font-size:1.15rem; margin-bottom:8px; color:var(--clay-dark);}
+.card p{margin:0; color:var(--ink-soft);}
+
+/* belligerents (Iliad) */
+.camps{
+  display:grid; grid-template-columns:1fr auto 1fr; gap:0 22px; align-items:start;
+  margin:8px 0 34px;
+}
+.camp{background:#f6f0e0; border:1px solid var(--line); border-radius:2px; padding:22px 24px;}
+.camp.grecs{border-top:4px solid var(--laurel);}
+.camp.troyens{border-top:4px solid var(--clay);}
+.camp h3{font-size:1.05rem; margin-bottom:4px;}
+.camp .camp-sub{font-style:italic; color:var(--ink-soft); font-size:0.88rem; margin-bottom:14px; display:block;}
+.camp dl{margin:0;}
+.camp dt{font-family:'Cinzel', serif; font-size:0.82rem; color:var(--clay-dark); margin-top:12px;}
+.camp dt:first-child{margin-top:0;}
+.camp dd{margin:2px 0 0; color:var(--ink-soft); font-size:0.94rem;}
+.vs{
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Cinzel Decorative', serif; color:var(--gold);
+  font-size:1.3rem; padding-top:40px;
+}
+.gods-note{
+  grid-column:1 / -1; margin-top:6px; padding:14px 20px;
+  background:rgba(107,122,82,0.1); border:1px dashed var(--laurel); border-radius:2px;
+  color:var(--plum); font-size:0.94rem;
+}
+@media (max-width:700px){
+  .camps{grid-template-columns:1fr;}
+  .vs{padding-top:0;}
+}
+
+/* stepped list for a real sequence (Odyssey voyage, seeds) */
+.steps{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:16px;}
+.steps li{
+  display:flex; gap:16px; align-items:flex-start;
+  background:#f6f0e0; border:1px solid var(--line); padding:16px 20px; border-radius:2px;
+}
+.steps .num{
+  font-family:'Cinzel', serif; font-weight:800; color:var(--gold);
+  background:var(--ink); border-radius:50%;
+  width:34px; height:34px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:0.95rem;
+}
+.steps h4{margin:0 0 4px; font-family:'Cinzel', serif; font-size:1rem; color:var(--clay-dark);}
+.steps p{margin:0; color:var(--ink-soft);}
+
+blockquote.aside{
+  border-left:3px solid var(--gold);
+  background:rgba(201,162,39,0.08);
+  padding:14px 20px; margin:26px 0; font-style:italic; color:var(--plum);
+}
+
+/* dark section (Hadès) */
+.dark-block{background:var(--ink); color:var(--papyrus-dim); margin:0 -24px; padding:48px 24px;}
+.dark-block h2{color:var(--gold);}
+.dark-block .intro{color:#c9bfa8;}
+.dark-block .card{background:var(--ink-soft); border-color:rgba(255,255,255,0.08); border-left:4px solid var(--gold); color:#d9cdb0;}
+.dark-block .card h3{color:var(--gold);}
+.dark-block .card p{color:#c9bfa8;}
+.dark-block .steps li{background:var(--ink-soft); border-color:rgba(255,255,255,0.08);}
+.dark-block .steps p{color:#c9bfa8;}
+
+/* genealogy tree */
+.tree{display:flex; flex-direction:column; align-items:center; gap:8px; padding:20px 0 10px;}
+.tier{display:flex; flex-wrap:wrap; justify-content:center; gap:14px; position:relative;}
+.node{
+  background:#f6f0e0; border:2px solid var(--clay); border-radius:6px;
+  padding:10px 16px; text-align:center; min-width:110px;
+  font-family:'Cinzel', serif; font-size:0.82rem;
+}
+.node small{display:block; font-family:'EB Garamond', serif; font-size:0.78rem; font-style:italic; color:var(--ink-soft); margin-top:3px;}
+.node.olympian{border-color:var(--gold); background:#f2e6c2;}
+.node.primordial{border-color:var(--laurel);}
+.connector{width:2px; height:22px; background:var(--line);}
+.tier-label{font-family:'Cinzel', serif; font-size:0.68rem; letter-spacing:.18em; text-transform:uppercase; color:var(--clay-dark); margin-top:6px;}
+
+/* dog note */
+.dog-note{
+  display:flex; gap:16px; align-items:center;
+  background:#f2e6c2; border:1px dashed var(--clay); border-radius:6px;
+  padding:16px 20px; margin:30px 0;
+}
+.dog-note svg{width:44px; height:44px; fill:var(--clay-dark); flex-shrink:0;}
+.dog-note p{margin:0; color:var(--plum);}
+
+footer{
+  text-align:center; padding:40px 24px 60px; color:var(--clay-dark);
+  font-family:'Cinzel', serif; font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase;
+}
+
+.home-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; margin-top:20px;}
+.home-card{
+  background:#f6f0e0; border:1px solid var(--line); border-radius:4px;
+  padding:24px; cursor:pointer; text-align:left;
+  transition:transform .2s, box-shadow .2s;
+}
+.home-card:hover{transform:translateY(-4px); box-shadow:0 10px 22px rgba(0,0,0,0.12);}
+.home-card svg{width:38px; height:38px; fill:var(--clay); margin-bottom:10px;}
+.home-card h3{font-size:1.05rem; color:var(--clay-dark); margin-bottom:6px;}
+.home-card p{margin:0; font-size:0.92rem; color:var(--ink-soft);}
+
+@media (max-width:640px){
+  .hero{padding-top:40px;}
+  .hero h1{font-size:2rem;}
+  body{font-size:17px;}
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto;}
+  .page{animation:none;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-wrap">
+    <span class="brand" role="button" tabindex="0" data-page="accueil">⚱ Pour Lola</span>
+    <nav>
+      <button data-page="accueil" class="active">Accueil</button>
+      <button data-page="iliade">Iliade</button>
+      <button data-page="odyssee">Odyssée</button>
+      <button data-page="genealogie">Généalogie</button>
+      <button data-page="hera">Héra</button>
+      <button data-page="persephone">Perséphone</button>
+      <button data-page="hades">Hadès</button>
+    </nav>
+  </div>
+  <div class="meander dark"></div>
+</header>
+
+<main>
+
+  <!-- ================= ACCUEIL ================= -->
+  <section class="page active" id="accueil">
+    <div class="hero">
+      <div class="hero-text">
+        <span class="label">Un cadeau pour Lola</span>
+        <h1>L'Iliade, l'Odyssée<br>et tout l'Olympe</h1>
+        <p class="sub">Un petit site fait maison, plein d'anecdotes drôles et surprenantes sur la mythologie grecque — parce que tu mérites mieux qu'un simple résumé Wikipédia.</p>
+      </div>
+      <div class="medallion">
+        <svg viewBox="0 0 24 24"><path d="M12 2 3 7v2h18V7L12 2zM5 10v9H4v2h16v-2h-1v-9h-2v9h-3v-9h-2v9H9v-9H7v9H6v-9H5z"/></svg>
+      </div>
+    </div>
+
+    <div class="meander"></div>
+
+    <section class="block">
+      <p class="intro">Six escales dans la mythologie grecque : la guerre de Troie, le long retour d'Ulysse, l'arbre généalogique (chaotique) des dieux, et trois portraits — Héra, Perséphone et Hadès, le grand incompris des Enfers.</p>
+
+      <div class="dog-note">
+        <svg viewBox="0 0 24 24"><path d="M4.5 9.5C3 9.5 2 10.7 2 12s1 2.5 2.5 2.5c.5 0 1-.2 1.4-.4.6 1.6 2 2.9 3.6 2.9v2h1.5v-2c1.9 0 3.6-1.3 4.1-3.1.4.3.9.6 1.4.6 1 0 1.5-.7 1.5-1.5s-.5-1.5-1.5-1.5c-.3 0-.6.1-.9.2C15.1 7.9 12.8 6 10 6c-1.4 0-2.7.5-3.7 1.3-.5-.3-1.1-.5-1.8-.5-1.7 0-3 1.3-3 3 0 .2 0 .4.1.6-.4-.3-.7-.6-1.1-.9z"/></svg>
+        <p><strong>Clin d'œil obligatoire :</strong> oui, la reine des dieux de l'Olympe partage son nom avec une certaine chienne très respectée. On espère qu'elle sera aussi jalouse de son territoire que l'originale (mais avec moins de vengeances dramatiques).</p>
+      </div>
+    </section>
+
+    <div class="home-grid">
+      <button class="home-card" data-page="iliade">
+        <svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <h3>L'Iliade</h3>
+        <p>Une guerre de dix ans déclenchée par une pomme et un ego blessé.</p>
+      </button>
+      <button class="home-card" data-page="odyssee">
+        <svg viewBox="0 0 24 24"><path d="M2 20c2 1 4 1 6 0s4-1 6 0 4 1 6 0M4 16l8-12 8 12"/></svg>
+        <h3>L'Odyssée</h3>
+        <p>Dix ans pour rentrer chez soi. GPS non fourni.</p>
+      </button>
+      <button class="home-card" data-page="genealogie">
+        <svg viewBox="0 0 24 24"><path d="M12 2v6M6 22v-6h12v6M6 16 3 12M18 16l3-4M12 8 6 12M12 8l6 4"/></svg>
+        <h3>Généalogie</h3>
+        <p>L'arbre le plus toxique de toute la mythologie.</p>
+      </button>
+      <button class="home-card" data-page="hera">
+        <svg viewBox="0 0 24 24"><path d="M12 3c4 2 5 5 5 8 0 4-2 7-5 9-3-2-5-5-5-9 0-3 1-6 5-8z"/></svg>
+        <h3>Héra</h3>
+        <p>La vraie reine de l'Olympe (et d'un canapé, probablement).</p>
+      </button>
+      <button class="home-card" data-page="persephone">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="8" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="12" cy="16" r="1.4"/></svg>
+        <h3>Perséphone</h3>
+        <p>Six grains de grenade et voilà l'hiver inventé.</p>
+      </button>
+      <button class="home-card" data-page="hades">
+        <svg viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6l-8-4z"/></svg>
+        <h3>Hadès</h3>
+        <p>Le dieu le plus calomnié de la mythologie grecque.</p>
+      </button>
+    </div>
+  </section>
+
+  <!-- ================= ILIADE ================= -->
+  <section class="page" id="iliade">
+    <div class="hero">
+      <div class="hero-text">
+        <span class="label">Page 1</span>
+        <h1>L'Iliade</h1>
+        <p class="sub">Homère raconte quelques semaines de la dixième année du siège de Troie. Officiellement une épopée héroïque. Officieusement, un drame de couple à l'échelle planétaire.</p>
+      </div>
+      <div class="medallion">
+        <svg viewBox="0 0 24 24"><path d="M12 2c-1 2-3 3-3 6 0 2 1 3 1 5-2 0-3-1-3-3-1 2-1 4 0 6 1 2 3 3 5 3s4-1 5-3c1-2 1-4 0-6 0 2-1 3-3 3 0-2 1-3 1-5 0-3-2-4-3-6z"/></svg>
+      </div>
+    </div>
+    <div class="meander"></div>
+
+    <section class="block">
+      <h2>Anecdotes qui expliquent (mal) une guerre de dix ans</h2>
+      <p class="intro">Techniquement, l'Iliade ne raconte même pas toute la guerre de Troie — juste la colère d'Achille. Le cheval de bois, la pomme d'or et la mort d'Achille viennent d'autres légendes. Homère, lui, préfère filmer une engueulade de camp militaire.</p>
+
+      <h2 style="margin-top:0;">Qui se bat contre qui ?</h2>
+      <p class="intro">Résumé des deux camps — humains et divins, tout le monde a fini par choisir un côté.</p>
+
+      <div class="camps">
+        <div class="camp grecs">
+          <h3>Les Achéens (Grecs)</h3>
+          <span class="camp-sub">Venus reprendre Hélène par la force</span>
+          <dl>
+            <dt>Agamemnon</dt>
+            <dd>Roi de Mycènes, chef suprême de la coalition grecque — et celui qui déclenche la colère d'Achille en lui confisquant sa captive.</dd>
+            <dt>Achille</dt>
+            <dd>Le meilleur guerrier grec, chef des Myrmidons. Son retrait du combat, puis son retour après la mort de Patrocle, structure tout le récit.</dd>
+            <dt>Ménélas</dt>
+            <dd>Roi de Sparte, mari d'Hélène. C'est son honneur bafoué qui sert officiellement de prétexte à toute la guerre.</dd>
+            <dt>Ulysse</dt>
+            <dd>Roi d'Ithaque, réputé pour sa ruse plus que sa force brute — futur héros de l'Odyssée.</dd>
+            <dt>Ajax le Grand</dt>
+            <dd>Géant increvable de l'armée grecque, deuxième meilleur combattant après Achille.</dd>
+            <dt>Diomède</dt>
+            <dd>Jeune roi d'Argos, si vaillant (et boosté par Athéna) qu'il ose blesser deux dieux en plein combat.</dd>
+            <dt>Nestor</dt>
+            <dd>Le sage conseiller, trop âgé pour se battre en première ligne, mais toujours prêt à rappeler « de mon temps... ».</dd>
+            <dt>Patrocle</dt>
+            <dd>Le compagnon le plus proche d'Achille. Sa mort au combat, portant l'armure de son ami, est le vrai déclic qui ramène Achille dans la guerre.</dd>
+          </dl>
+        </div>
+
+        <div class="vs">VS</div>
+
+        <div class="camp troyens">
+          <h3>Les Troyens et leurs alliés</h3>
+          <span class="camp-sub">Défendent leur ville assiégée depuis dix ans</span>
+          <dl>
+            <dt>Priam</dt>
+            <dd>Vieux roi de Troie, père d'une cinquantaine d'enfants, dont Hector et Pâris. Il ira lui-même supplier Achille de lui rendre le corps de son fils.</dd>
+            <dt>Hector</dt>
+            <dd>Fils aîné de Priam, véritable chef militaire de Troie — bien plus responsable et respecté que son frère Pâris. Son duel final contre Achille est le sommet du poème.</dd>
+            <dt>Pâris</dt>
+            <dd>Le frère qui a enlevé Hélène et déclenché toute l'affaire. Piètre combattant, sauvé plus d'une fois in extremis par Aphrodite.</dd>
+            <dt>Énée</dt>
+            <dd>Cousin d'Hector, protégé d'Aphrodite (sa mère divine). Il survit à la guerre et deviendra, dans la légende romaine, l'ancêtre des fondateurs de Rome.</dd>
+            <dt>Sarpédon</dt>
+            <dd>Roi allié de Lycie, fils de Zeus lui-même — ce qui n'empêche pas son père de le laisser mourir au combat, faute d'intervenir.</dd>
+            <dt>Glaucos</dt>
+            <dd>Cousin et compagnon d'armes de Sarpédon, connu pour avoir échangé son armure en or contre celle en bronze d'un ennemi grec, sans y voir un mauvais calcul.</dd>
+          </dl>
+        </div>
+
+        <div class="gods-note"><strong>Et les dieux ?</strong> Héra, Athéna, Poséidon, Hermès et Héphaïstos soutiennent les Grecs (rancune tenace après le jugement de Pâris). Aphrodite, Arès, Apollon et Artémis soutiennent Troie. Zeus, lui, essaie officiellement de rester neutre — et n'y parvient jamais complètement.</div>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <span class="label">Origine du drame</span>
+          <h3>La pomme la plus toxique de l'histoire</h3>
+          <p>Tout commence par un mariage où une déesse n'est pas invitée : Éris, la Discorde. Vexée, elle balance une pomme d'or « à la plus belle ». Héra, Athéna et Aphrodite se battent pour l'attraper, comme trois collègues devant le dernier croissant en salle de pause. Résultat : la guerre de Troie.</p>
+        </div>
+        <div class="card">
+          <span class="label">Jugement douteux</span>
+          <h3>Pâris, le pire arbitre de concours de beauté</h3>
+          <p>Zeus refuse de trancher (stratège) et refile la pomme à Pâris, simple berger. Chaque déesse tente de le corrupter : pouvoir, gloire militaire, ou la plus belle femme du monde. Pâris choisit la femme — qui se trouve être déjà mariée à un roi grec. Aucune conséquence n'est envisagée à ce stade.</p>
+        </div>
+        <div class="card">
+          <span class="label">Ego fragile</span>
+          <h3>La bouderie d'Achille</h3>
+          <p>Le déclencheur réel de l'Iliade n'est pas Hélène, mais une esclave de guerre qu'Agamemnon confisque à Achille par principe. Vexé, le meilleur guerrier grec... arrête de se battre et boude sous sa tente pendant une bonne partie du poème. Des milliers de morts plus tard, il s'y remet.</p>
+        </div>
+        <div class="card">
+          <span class="label">Protection rapprochée</span>
+          <h3>Pâris se fait littéralement téléporter</h3>
+          <p>En plein duel contre Ménélas, Pâris est sur le point de perdre. Aphrodite l'enveloppe alors d'un nuage et le dépose... dans sa chambre à coucher, sain et sauf. Le combat s'arrête net, personne ne sait où est passé le fautif, et Hélène doit gérer la situation seule.</p>
+        </div>
+        <div class="card">
+          <span class="label">Un mortel un peu trop fort</span>
+          <h3>Diomède blesse deux dieux dans la même journée</h3>
+          <p>Le héros grec Diomède, boosté par Athéna, se met à charger n'importe qui sur le champ de bataille — y compris Aphrodite, qu'il blesse à la main, puis Arès, le dieu de la guerre en personne, qu'il transperce au ventre. Arès repart en hurlant vers l'Olympe se plaindre à Zeus.</p>
+        </div>
+        <div class="card">
+          <span class="label">Talon d'Achille</span>
+          <h3>Le point faible le plus célèbre... n'est pas dans l'Iliade</h3>
+          <p>Contrairement à la légende, Homère ne mentionne jamais le fameux talon. Cette histoire (Achille trempé dans le Styx par sa mère, sauf au talon qui la tenait) apparaît bien plus tard, chez des auteurs romains. L'Iliade s'arrête d'ailleurs avant la mort d'Achille.</p>
+        </div>
+        <div class="card">
+          <span class="label">Le seul qui dit tout haut</span>
+          <h3>Thersite, le râleur du camp</h3>
+          <p>Un simple soldat, laid et bavard, ose critiquer publiquement Agamemnon devant toute l'armée. Ulysse le frappe avec son sceptre pour le faire taire, sous les rires généraux. Moralité antique : la satire politique se termine rarement bien.</p>
+        </div>
+        <div class="card">
+          <span class="label">Interdiction non respectée</span>
+          <h3>Zeus interdit aux dieux d'intervenir... puis intervient</h3>
+          <p>En plein conseil de l'Olympe, Zeus ordonne solennellement à tous les dieux de rester neutres. Quelques chants plus tard, la moitié du panthéon se bat dans la plaine de Troie, et Zeus lui-même fait pencher la balance en pesant les destins d'Achille et Hector sur une balance d'or.</p>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <!-- ================= ODYSSEE ================= -->
+  <section class="page" id="odyssee">
+    <div class="hero">
+      <div class="hero-text">
+        <span class="label">Page 2</span>
+        <h1>L'Odyssée</h1>
+        <p class="sub">Ulysse met dix ans à rentrer chez lui après une guerre qui en a duré dix. À sa décharge, il croise à peu près tous les monstres et pièges disponibles en Méditerranée.</p>
+      </div>
+      <div class="medallion">
+        <svg viewBox="0 0 24 24"><path d="M4 16c2 2 4 2 6 0s4-2 6 0 4 2 6 0M6 12l6-8 6 8"/></svg>
+      </div>
+    </div>
+    <div class="meander"></div>
+
+    <section class="block">
+      <h2>Les étapes (vraiment trop nombreuses) du voyage</h2>
+      <p class="intro">Un vrai road-trip mythologique, dans l'ordre — de la ruse du cheval de bois jusqu'au retour à Ithaque, vingt ans après le départ.</p>
+
+      <ul class="steps">
+        <li>
+          <span class="num">1</span>
+          <div>
+            <h4>Le départ de Troie</h4>
+            <p>Après la victoire grecque, Ulysse quitte Troie avec ses hommes pour rentrer à Ithaque. Mais dès les premiers jours, tout part de travers : il va provoquer des dieux, perdre des hommes, et être sans cesse retardé. Un trajet censé durer quelques semaines va finalement en prendre dix ans.</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">2</span>
+          <div>
+            <h4>Les Cicones, ou la leçon d'humilité n°1</h4>
+            <p>Première escale, première bêtise : Ulysse et ses hommes pillent la ville d'Ismaros chez les Cicones, puis s'attardent trop longtemps à fêter ça au lieu de repartir vite. Les Cicones contre-attaquent et Ulysse perd des hommes. Moralité immédiate : l'orgueil et l'imprudence coûtent cher.</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">3</span>
+          <div>
+            <h4>Les Lotophages, ou le danger du confort</h4>
+            <p>Chez les Lotophages, un peuple qui se nourrit du fruit du lotus, certains compagnons d'Ulysse goûtent ce fruit qui efface toute envie de rentrer chez soi. Il doit littéralement les traîner de force jusqu'aux navires. Une idée forte s'installe : le danger n'est pas toujours violent, parfois c'est juste l'envie d'abandonner.</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">4</span>
+          <div>
+            <h4>« Personne » contre le Cyclope</h4>
+            <p>Dans la grotte du Cyclope Polyphème, fils de Poséidon, Ulysse se présente sous le nom « Personne ». Une fois le monstre enivré puis aveuglé d'un pieu, il hurle à ses voisins que « Personne » l'attaque — logiquement, personne ne vient l'aider. Ulysse s'échappe accroché sous les moutons du Cyclope, mais commet une erreur d'orgueil : il révèle son vrai nom en partant. Polyphème demande alors à son père Poséidon de le punir. C'est cette rancune divine qui explique la longueur du retour.</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">5</span>
+          <div>
+            <h4>L'outre des vents ouverte trop tôt</h4>
+            <p>Éole, maître des vents, offre à Ulysse un sac contenant tous les vents contraires, ce qui lui permet de presque rentrer chez lui — Ithaque est en vue. Pendant qu'il dort, ses hommes, persuadés que le sac contient un trésor, l'ouvrent en cachette. Tous les vents s'échappent et les repoussent loin d'Ithaque, juste avant l'arrivée.</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">6</span>
+          <div>
+            <h4>Les Lestrygons, des géants sans pitié</h4>
+            <p>Chez les Lestrygons, des géants cannibales, la flotte d'Ulysse est presque entièrement détruite. Un seul navire survit : le sien. À partir de là, il n'a plus aucune marge d'erreur.</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">7</span>
+          <div>
+            <h4>Circé transforme l'équipage en cochons</h4>
+            <p>La magicienne Circé change plusieurs hommes d'Ulysse en cochons. Protégé par une plante magique offerte par Hermès, il résiste à son sortilège. Circé finit par l'accueillir, et il reste chez elle un an, avant qu'elle ne lui ordonne de descendre aux Enfers consulter le devin Tirésias.</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">8</span>
+          <div>
+            <h4>La descente aux Enfers</h4>
+            <p>Aux Enfers, Ulysse croise plusieurs âmes, dont celle de sa propre mère, morte pendant son absence — un moment très dur pour lui. Le devin Tirésias lui révèle les dangers à venir, et surtout une consigne précise : ne jamais toucher aux troupeaux sacrés du dieu Hélios.</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">9</span>
+          <div>
+            <h4>Le chant des Sirènes</h4>
+            <p>Pour passer devant les Sirènes, dont le chant attire les marins vers la mort, Ulysse bouche les oreilles de ses hommes avec de la cire, mais veut lui-même entendre le chant. Il se fait attacher au mât avec l'ordre formel de ne pas être détaché, même s'il supplie. Il devient fou d'envie de les rejoindre — ses hommes tiennent bon, et tout le monde survit.</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">10</span>
+          <div>
+            <h4>Charybde et Scylla, le moindre mal</h4>
+            <p>Entre le gouffre marin Charybde, qui aspire les navires, et Scylla, monstre à plusieurs têtes qui dévore les marins, Ulysse doit choisir. Passer trop près de Charybde détruirait tout le navire ; passer près de Scylla ne coûtera que quelques hommes. Il choisit Scylla : six hommes meurent, mais le navire survit — un chef doit parfois arbitrer entre catastrophe totale et perte limitée.</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">11</span>
+          <div>
+            <h4>Les troupeaux sacrés d'Hélios</h4>
+            <p>Bloqués par les vents sur l'île du dieu Soleil et à court de nourriture, les hommes d'Ulysse désobéissent pendant son sommeil et mangent les bœufs sacrés d'Hélios. Les dieux punissent immédiatement cette faute : Zeus détruit le navire d'un coup de foudre. Tous les compagnons meurent. Ulysse est l'unique survivant.</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">12</span>
+          <div>
+            <h4>Calypso et l'offre d'immortalité refusée</h4>
+            <p>Échoué sur l'île de la nymphe Calypso, Ulysse y est retenu plusieurs années. Amoureuse, elle lui propose même l'immortalité s'il reste avec elle pour toujours. Il refuse : il veut retrouver Pénélope et Ithaque, quitte à rester mortel. Les dieux finissent par ordonner à Calypso de le laisser partir.</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">13</span>
+          <div>
+            <h4>Les Phéaciens, la dernière étape avant le retour</h4>
+            <p>Reparti sur un simple radeau, Ulysse essuie une nouvelle tempête envoyée par Poséidon avant d'échouer chez les Phéaciens, un peuple accueillant. Il leur raconte alors toute son odyssée depuis Troie — et c'est grâce à eux qu'il rejoint enfin Ithaque.</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">14</span>
+          <div>
+            <h4>Retour à Ithaque, déguisé en mendiant</h4>
+            <p>De retour chez lui, Ulysse est transformé par Athéna en vieux mendiant méconnaissable, le temps d'observer la situation avant d'agir. Au palais, les prétendants au trône occupent les lieux, dévorent ses richesses et pressent Pénélope de choisir un nouveau mari. Elle, de son côté, gagne du temps grâce à un linceul qu'elle tisse le jour et défait chaque nuit en secret.</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">15</span>
+          <div>
+            <h4>Télémaque retrouve son père</h4>
+            <p>Télémaque, le fils d'Ulysse, revient lui aussi à Ithaque après être parti chercher des nouvelles de son père. Ulysse se fait alors reconnaître de lui, et les deux préparent ensemble leur vengeance contre les prétendants.</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">16</span>
+          <div>
+            <h4>L'épreuve de l'arc</h4>
+            <p>Pénélope organise un concours : celui qui parviendra à bander l'arc d'Ulysse et à tirer une flèche à travers douze haches alignées pourra l'épouser. Tous les prétendants échouent. Le mendiant qu'est censé être Ulysse demande à essayer, sous les moqueries générales — et réussit du premier coup. Le piège se referme.</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">17</span>
+          <div>
+            <h4>Le massacre des prétendants</h4>
+            <p>Ulysse révèle enfin sa véritable identité et, avec Télémaque et quelques serviteurs fidèles, extermine les prétendants. Une violence radicale, mais justifiée dans la logique grecque : ils ont violé les règles sacrées de l'hospitalité et tenté de voler son royaume.</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">18</span>
+          <div>
+            <h4>Le test du lit conjugal</h4>
+            <p>Pénélope ne se précipite pas pour le reconnaître : elle veut être sûre. Elle le teste avec le secret de leur lit, construit autour d'un olivier enraciné dans le sol et donc impossible à déplacer. Quand Ulysse décrit ce détail que lui seul peut connaître, Pénélope comprend enfin que c'est vraiment lui.</p>
+          </div>
+        </li>
+        <li>
+          <span class="num">19</span>
+          <div>
+            <h4>Le retour à l'ordre</h4>
+            <p>Après vingt ans d'absence au total — dix ans de guerre à Troie, dix ans de voyage —, Ulysse retrouve sa place de roi, de mari et de père, la paix étant rétablie à Ithaque avec l'aide d'Athéna.</p>
+          </div>
+        </li>
+      </ul>
+
+      <blockquote class="aside">Au total, le trajet Troie–Ithaque, qui devrait prendre quelques semaines en bateau, en prend dix ans. Aujourd'hui on appellerait ça un problème d'itinéraire GPS.</blockquote>
+    </section>
+  </section>
+
+  <!-- ================= GENEALOGIE ================= -->
+  <section class="page" id="genealogie">
+    <div class="hero">
+      <div class="hero-text">
+        <span class="label">Page 3</span>
+        <h1>L'arbre généalogique des dieux</h1>
+        <p class="sub">Entre cannibalisme familial, mariages entre frère et sœur et naissances toujours plus improbables, voici l'arbre le plus dysfonctionnel de la mythologie.</p>
+      </div>
+      <div class="medallion">
+        <svg viewBox="0 0 24 24"><path d="M12 2v5M8 22v-6h8v6M8 16 4 11M16 16l4-5M12 7 7 11M12 7l5 4"/></svg>
+      </div>
+    </div>
+    <div class="meander"></div>
+
+    <section class="block">
+      <h2>De Chaos à l'Olympe</h2>
+      <p class="intro">Petit résumé visuel — dans l'ordre chronologique, du vide originel jusqu'à la génération qui préside vraiment le mont Olympe.</p>
+
+      <div class="tree">
+        <div class="tier-label">Origine</div>
+        <div class="tier"><div class="node primordial">Chaos<small>le vide primordial</small></div></div>
+        <div class="connector"></div>
+        <div class="tier-label">Primordiaux</div>
+        <div class="tier">
+          <div class="node primordial">Gaïa<small>la Terre</small></div>
+          <div class="node primordial">Ouranos<small>le Ciel, son propre fils</small></div>
+          <div class="node primordial">Tartare · Éros · Nyx</div>
+        </div>
+        <div class="connector"></div>
+        <div class="tier-label">Titans</div>
+        <div class="tier">
+          <div class="node">Cronos<small>castre son père Ouranos</small></div>
+          <div class="node">Rhéa<small>sa sœur ET épouse</small></div>
+          <div class="node">Océan · Thémis · Mnémosyne…</div>
+        </div>
+        <div class="connector"></div>
+        <div class="tier-label">Olympiens (frères et sœurs)</div>
+        <div class="tier">
+          <div class="node olympian">Zeus</div>
+          <div class="node olympian">Héra<small>sœur ET épouse de Zeus</small></div>
+          <div class="node olympian">Poséidon</div>
+          <div class="node olympian">Hadès</div>
+          <div class="node olympian">Déméter</div>
+          <div class="node olympian">Hestia</div>
+        </div>
+        <div class="connector"></div>
+        <div class="tier-label">Enfants de Zeus (liste non exhaustive)</div>
+        <div class="tier">
+          <div class="node">Athéna<small>née du crâne de Zeus</small></div>
+          <div class="node">Apollon</div>
+          <div class="node">Artémis</div>
+          <div class="node">Arès<small>fils de Zeus & Héra</small></div>
+          <div class="node">Héphaïstos<small>fils d'Héra seule, par vengeance</small></div>
+          <div class="node">Hermès</div>
+          <div class="node">Dionysos</div>
+          <div class="node">Perséphone<small>fille de Zeus & Déméter</small></div>
+        </div>
+      </div>
+
+      <div class="cards" style="margin-top:10px;">
+        <div class="card">
+          <span class="label">Ambiance familiale</span>
+          <h3>Chaque génération renverse la précédente</h3>
+          <p>Ouranos est castré par son fils Cronos. Cronos, pour éviter le même sort, avale ses enfants à la naissance — sauf Zeus, caché par Rhéa, qui finit par le forcer à tout régurgiter. Trois générations, trois coups d'État familiaux.</p>
+        </div>
+        <div class="card">
+          <span class="label">Naissance improbable n°1</span>
+          <h3>Athéna sort tout armée du crâne de Zeus</h3>
+          <p>Zeus avale sa compagne Métis enceinte, par peur d'une prophétie. Il souffre ensuite d'un mal de crâne si violent qu'Héphaïstos lui fend le front à la hache. Athéna en jaillit, adulte, casquée et armée. Aucune sage-femme n'a été impliquée.</p>
+        </div>
+        <div class="card">
+          <span class="label">Naissance improbable n°2</span>
+          <h3>Dionysos, né deux fois</h3>
+          <p>Sa mère mortelle meurt foudroyée avant terme (piège tendu par une Héra jalouse). Zeus récupère le fœtus et le coud dans sa propre cuisse jusqu'au terme. D'où son surnom : « né deux fois ».</p>
+        </div>
+        <div class="card">
+          <span class="label">Mariage consanguin assumé</span>
+          <h3>Le couple royal est un couple de frère et sœur</h3>
+          <p>Zeus et Héra, comme Cronos et Rhéa avant eux, sont frère et sœur. Personne sur l'Olympe ne trouve ça bizarre — c'est même la norme chez les dieux primordiaux.</p>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <!-- ================= HERA ================= -->
+  <section class="page" id="hera">
+    <div class="hero">
+      <div class="hero-text">
+        <span class="label">Page 4</span>
+        <h1>Héra</h1>
+        <p class="sub">Reine des dieux, déesse du mariage et de la famille — et la plus grande spécialiste antique de la vengeance patiente et méthodique.</p>
+      </div>
+      <div class="medallion">
+        <svg viewBox="0 0 24 24"><path d="M12 3c4 2 5 5 5 8 0 4-2 7-5 9-3-2-5-5-5-9 0-3 1-6 5-8z"/></svg>
+      </div>
+    </div>
+    <div class="meander"></div>
+
+    <section class="block">
+      <h2>Portrait d'une reine qu'on ne trahit pas deux fois</h2>
+      <p class="intro">Fille de Cronos et Rhéa, sœur et épouse de Zeus, Héra règne sur l'Olympe. Son mari étant chroniquement infidèle, une grande partie de sa mythologie consiste à punir non pas lui, mais ses conquêtes et leurs enfants.</p>
+
+      <div class="cards">
+        <div class="card">
+          <span class="label">Symboles</span>
+          <h3>Le paon et la vache</h3>
+          <p>Héra est associée au paon, dont les motifs sur les plumes seraient les cent yeux de son garde Argos, et à la vache — sacrée à ses yeux au point qu'elle porte l'épithète « aux yeux de bœuf » chez Homère. Un compliment, à l'époque.</p>
+        </div>
+        <div class="card">
+          <span class="label">Vengeance n°1</span>
+          <h3>Io transformée en vache</h3>
+          <p>Zeus change une de ses conquêtes, Io, en génisse pour la cacher d'Héra. Sans être dupe une seconde, Héra demande la vache en cadeau, puis la fait surveiller par Argos aux cent yeux, avant de l'envoyer se faire harceler par un taon à travers toute la Méditerranée.</p>
+        </div>
+        <div class="card">
+          <span class="label">Vengeance n°2</span>
+          <h3>Héraclès, la victime la plus célèbre</h3>
+          <p>Le nom « Héraclès » signifie littéralement « gloire d'Héra » — ironie amère, puisqu'elle passe une bonne partie de sa vie à s'acharner sur lui, fils illégitime de Zeus. Elle lui envoie même une crise de folie meurtrière, à l'origine de ses fameux douze travaux.</p>
+        </div>
+        <div class="card">
+          <span class="label">Involontaire mais cosmique</span>
+          <h3>La création de la Voie lactée</h3>
+          <p>Selon une version du mythe, Zeus fait téter le bébé Héraclès à une Héra endormie pour le rendre immortel. Elle se réveille, le repousse brusquement — et le lait giclé dans le ciel forme la Voie lactée. En grec, « galaxie » vient d'ailleurs du mot pour... lait.</p>
+        </div>
+        <div class="card">
+          <span class="label">Maternité punitive</span>
+          <h3>Héphaïstos rejeté à la naissance</h3>
+          <p>Pour rivaliser avec Zeus qui a enfanté Athéna seul, Héra tente la même chose et donne naissance à Héphaïstos sans père. Déçue par son apparence, elle le jette du haut de l'Olympe. Devenu forgeron des dieux, il se vengera plus tard en lui envoyant un trône piégé, impossible à quitter sans son aide.</p>
+        </div>
+        <div class="card">
+          <span class="label">Étymologie</span>
+          <h3>Juno, juin, et un peu de génétique du calendrier</h3>
+          <p>Chez les Romains, Héra devient Junon (Juno) — d'où le mois de juin. Une déesse du mariage qui finit par donner son nom au mois le plus populaire pour se marier : la boucle est bouclée.</p>
+        </div>
+      </div>
+
+      <div class="dog-note">
+        <svg viewBox="0 0 24 24"><path d="M4.5 9.5C3 9.5 2 10.7 2 12s1 2.5 2.5 2.5c.5 0 1-.2 1.4-.4.6 1.6 2 2.9 3.6 2.9v2h1.5v-2c1.9 0 3.6-1.3 4.1-3.1.4.3.9.6 1.4.6 1 0 1.5-.7 1.5-1.5s-.5-1.5-1.5-1.5c-.3 0-.6.1-.9.2C15.1 7.9 12.8 6 10 6c-1.4 0-2.7.5-3.7 1.3-.5-.3-1.1-.5-1.8-.5-1.7 0-3 1.3-3 3 0 .2 0 .4.1.6-.4-.3-.7-.6-1.1-.9z"/></svg>
+        <p>Donc oui, Lola : ta chienne porte le nom de la reine de l'Olympe, protectrice jalouse de son territoire et de sa famille. Difficile de trouver plus approprié pour une bonne gardienne.</p>
+      </div>
+    </section>
+  </section>
+
+  <!-- ================= PERSEPHONE ================= -->
+  <section class="page" id="persephone">
+    <div class="hero">
+      <div class="hero-text">
+        <span class="label">Page 5</span>
+        <h1>Perséphone</h1>
+        <p class="sub">Fille de Zeus et Déméter, reine des Enfers malgré elle — et responsable, à cause de six petits grains de fruit, de l'existence de l'hiver.</p>
+      </div>
+      <div class="medallion">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="8" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="12" cy="16" r="1.4"/><circle cx="12" cy="12" r="1.4"/></svg>
+      </div>
+    </div>
+    <div class="meander"></div>
+
+    <section class="block">
+      <h2>De Coré à reine des Enfers</h2>
+      <p class="intro">Avant son enlèvement, elle s'appelle Coré, « la jeune fille ». Après, on ne l'appelle plus jamais ainsi : le changement de nom marque, à lui seul, le passage à un tout autre statut.</p>
+
+      <div class="cards">
+        <div class="card">
+          <span class="label">L'enlèvement</span>
+          <h3>Une fleur trop parfaite pour être honnête</h3>
+          <p>Coré cueille des fleurs des champs quand un narcisse extraordinaire attire son attention — planté là par Gaïa, en service commandé pour Hadès. Au moment où elle le cueille, le sol s'ouvre et Hadès surgit sur son char pour l'emmener sous terre.</p>
+        </div>
+        <div class="card">
+          <span class="label">La grève de Déméter</span>
+          <h3>Une mère qui met la planète en pause</h3>
+          <p>Folle d'inquiétude, Déméter, déesse des moissons, cesse de faire pousser quoi que ce soit sur Terre. Les récoltes s'arrêtent, la famine menace l'humanité entière — jusqu'à ce que Zeus, sous la pression, ordonne le retour de sa fille.</p>
+        </div>
+        <div class="card">
+          <span class="label">La clause contractuelle</span>
+          <h3>La règle des grains de grenade</h3>
+          <p>Il existe une règle simple aux Enfers : quiconque y mange en devient captif. Avant son départ, Hadès offre à Perséphone quelques grains de grenade. Elle en mange six — sans savoir (ou sans se douter) que ce détail va tout changer.</p>
+        </div>
+      </div>
+
+      <ul class="steps">
+        <li>
+          <span class="num">6</span>
+          <div>
+            <h4>Six grains, six mois</h4>
+            <p>Parce qu'elle a mangé six grains de grenade, Perséphone est condamnée à passer six mois par an aux Enfers auprès d'Hadès, et six mois sur Terre auprès de sa mère. Quand elle remonte, Déméter, ravie, fait fleurir le printemps et l'été. Quand elle redescend, la Terre replonge dans l'automne et l'hiver.</p>
+          </div>
+        </li>
+      </ul>
+
+      <div class="cards" style="margin-top:20px;">
+        <div class="card">
+          <span class="label">Changement de statut</span>
+          <h3>De « la jeune fille » à reine des Enfers</h3>
+          <p>Une fois installée sous terre, Perséphone ne reste pas une simple otage : elle devient une véritable reine des Enfers, siégeant aux côtés d'Hadès et intervenant dans plusieurs mythes en position de pouvoir, notamment auprès d'Orphée.</p>
+        </div>
+        <div class="card">
+          <span class="label">Colocataire</span>
+          <h3>Hécate, la compagne qui ne l'a jamais lâchée</h3>
+          <p>Seule déesse à avoir entendu les cris de Coré lors de l'enlèvement, Hécate, déesse de la magie et des carrefours, devient sa proche compagne aux Enfers — une des rares amitiés durables de toute la mythologie grecque.</p>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <!-- ================= HADES ================= -->
+  <section class="page" id="hades">
+    <div class="dark-block">
+      <div class="hero" style="padding-top:24px;">
+        <div class="hero-text">
+          <span class="label" style="color:var(--gold);">Page 6</span>
+          <h1 style="color:var(--papyrus);">Hadès</h1>
+          <p class="sub" style="color:#c9bfa8;">Le dieu le plus mal compris de l'Olympe — enfin, techniquement, il ne vit même pas sur l'Olympe. Administrateur rigoureux des Enfers, pas incarnation du mal : c'est ça, le vrai scandale mythologique.</p>
+        </div>
+        <div class="medallion" style="background:radial-gradient(circle at 35% 30%, #4a3524, var(--plum) 70%); border-color:var(--gold);">
+          <svg viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6l-8-4z"/></svg>
+        </div>
+      </div>
+      <div class="meander dark"></div>
+
+      <section class="block">
+        <h2>Portrait détaillé du souverain des Enfers</h2>
+        <p class="intro">Frère de Zeus et Poséidon, Hadès reçoit les Enfers par tirage au sort après la victoire sur les Titans. Contrairement à sa réputation, il n'est ni maléfique ni cruel — juste extrêmement à cheval sur le règlement.</p>
+
+        <div class="cards">
+          <div class="card">
+            <span class="label">Le tirage au sort</span>
+            <h3>Un royaume gagné à la courte paille</h3>
+            <p>Après la victoire sur les Titans, les trois frères Zeus, Poséidon et Hadès se partagent l'univers en tirant au sort. Zeus obtient le Ciel, Poséidon la Mer, et Hadès hérite des Enfers — le lot que personne ne voulait vraiment.</p>
+          </div>
+          <div class="card">
+            <span class="label">Réputation injuste</span>
+            <h3>Administrateur, pas incarnation du mal</h3>
+            <p>Contrairement au diable des traditions chrétiennes, Hadès ne punit pas les vivants ni ne cherche à corrompre qui que ce soit. Il gère un territoire et fait respecter des règles fixes. Le vrai « méchant » de la théogonie grecque, c'est plutôt Cronos, qui mange ses propres enfants.</p>
+          </div>
+          <div class="card">
+            <span class="label">Garde du corps</span>
+            <h3>Cerbère, le videur à trois têtes</h3>
+            <p>Le chien Cerbère garde l'entrée des Enfers avec une règle simple : les âmes peuvent entrer librement, mais aucune ne doit ressortir. Un des rares héros à réussir à le maîtriser brièvement est Héraclès, lors de son douzième et dernier travail.</p>
+          </div>
+          <div class="card">
+            <span class="label">Objet magique</span>
+            <h3>Le casque d'invisibilité</h3>
+            <p>Les Cyclopes offrent à Hadès un casque qui rend invisible, qu'il prête occasionnellement à des héros comme Persée. Malgré cet objet redoutable, Hadès lui-même quitte très rarement son royaume — sa seule incursion notable à la surface est justement l'enlèvement de Perséphone.</p>
+          </div>
+          <div class="card">
+            <span class="label">Personnel administratif</span>
+            <h3>Trois juges, un passeur, un fleuve-serment</h3>
+            <p>Minos, Rhadamanthe et Éaque jugent chaque âme à son arrivée. Charon fait traverser le Styx aux défunts contre une pièce placée sous la langue du mort — d'où la tradition antique d'enterrer les morts avec une monnaie. Le Styx lui-même sert de serment ultime : même les dieux qui le violent sont punis.</p>
+          </div>
+          <div class="card">
+            <span class="label">Les grands punis</span>
+            <h3>Sisyphe, Tantale et Ixion</h3>
+            <p>Sisyphe pousse éternellement un rocher qui redescend juste avant le sommet, pour avoir voulu tromper la mort. Tantale, affamé et assoiffé, voit nourriture et eau reculer dès qu'il approche. Ixion tourne sans fin sur une roue enflammée. Trois punitions sur-mesure, dignes d'un juriste tatillon.</p>
+          </div>
+          <div class="card">
+            <span class="label">Le seul mythe romantique</span>
+            <h3>Orphée, Eurydice et une seule condition</h3>
+            <p>Ému par la musique d'Orphée venu réclamer sa femme morte, Hadès accepte de la laisser repartir — à une seule condition : ne pas se retourner avant d'être sorti des Enfers. Orphée craque à quelques mètres de la sortie. Un contrat clair, respecté à la lettre par Hadès, rompu par l'humain.</p>
+          </div>
+          <div class="card">
+            <span class="label">Vie de couple</span>
+            <h3>Un mariage plus stable qu'il n'y paraît</h3>
+            <p>Malgré des débuts contestables (l'enlèvement de Perséphone), Hadès est l'un des rares dieux grecs à ne jamais être infidèle. Contrairement à Zeus, sa mythologie ne contient aucune liaison extraconjugale connue — un détail que la plupart des lecteurs oublient.</p>
+          </div>
+        </div>
+
+        <blockquote class="aside" style="border-left-color:var(--gold); background:rgba(201,162,39,0.08); color:#e2d5b8;">En résumé : le vrai scandale, ce n'est pas Hadès — c'est sa réputation.</blockquote>
+      </section>
+    </div>
+  </section>
+
+</main>
+
+<footer>Fait avec un peu trop d'anecdotes mythologiques, spécialement pour Lola (et Héra)</footer>
+
+<script>
+  const pages = document.querySelectorAll('.page');
+  const navButtons = document.querySelectorAll('nav button');
+
+  function showPage(id, updateHash){
+    pages.forEach(p => p.classList.toggle('active', p.id === id));
+    navButtons.forEach(b => b.classList.toggle('active', b.dataset.page === id));
+    if(updateHash !== false){ history.replaceState(null, '', '#' + id); }
+    window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'});
+  }
+
+  document.querySelectorAll('[data-page]').forEach(el => {
+    el.addEventListener('click', () => showPage(el.dataset.page));
+    el.addEventListener('keydown', e => { if(e.key === 'Enter') showPage(el.dataset.page); });
+  });
+
+  window.addEventListener('hashchange', () => {
+    const id = location.hash.replace('#','');
+    if(document.getElementById(id)) showPage(id, false);
+  });
+
+  const initial = location.hash.replace('#','');
+  if(initial && document.getElementById(initial)) showPage(initial, false);
+</script>
+
+</body>
+</html>
